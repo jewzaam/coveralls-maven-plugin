@@ -173,7 +173,13 @@ public abstract class AbstractCoverallsMojo extends AbstractMojo {
         
         try {
             createEnvironment().setup();
-            SourceLoader sourceLoader = createSourceLoader();
+            SourceLoader sourceLoader;
+            try {
+                sourceLoader = createSourceLoader();
+            } catch (IllegalArgumentException ex) {
+                // no source, skip
+                return;
+            }
             CoverageParser parser = createCoverageParser(sourceLoader);
             Job job = createJob();
             job.validate().throwOrInform(getLog());
